@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "bfaheem/nodejs:latest" // Update image tag as needed.
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Bishoy-Samwel/jenkins_nodejs', branch: 'master'
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image using your Dockerfile
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+        
+        // stage('Test') {
+        //     steps {
+        //         // Run container tests (adjust command depending on your project’s test process)
+        //         sh "docker run --rm ${DOCKER_IMAGE} ./run-tests.sh"
+        //     }
+        // }
+        
+        stage('Deploy') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', 
+                                                 usernameVariable: 'DOCKER_USERNAME', 
+                                                 passwordVariable: 'DOCKER_PASSWORD')]) {
+                    // This block now has access to DOCKER_USERNAME and DOCKER_PASSWORD
+                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                    sh "docker push ${DOCKER_IMAGE}"
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo "Build and deployment succeeded."
+        }
+        failure {
+            echo "Build or tests failed. Please review the logs."
+        }
+    }
+}
