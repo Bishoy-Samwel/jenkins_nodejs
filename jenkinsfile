@@ -8,8 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Bishoy-Samwel/jenkins_nodejs', 
-                // branch: 'master'
+                git url: 'https://github.com/Bishoy-Samwel/jenkins_nodejs'
             }
         }
         
