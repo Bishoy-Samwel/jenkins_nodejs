@@ -30,7 +30,7 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', 
+                withCredentials([usernamePassword(credentialsId: '93d29546-c95f-4f14-8cc5-be65b696510d', 
                                                  usernameVariable: 'DOCKER_USERNAME', 
                                                  passwordVariable: 'DOCKER_PASSWORD')]) {
                     // This block now has access to DOCKER_USERNAME and DOCKER_PASSWORD
